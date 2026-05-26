@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://designation2go.com/sitemap.xml
+
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /_debugbar/
