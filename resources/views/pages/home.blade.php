@@ -4,16 +4,53 @@
 @section('meta_description', __('home.hero_subtitle'))
 
 @section('content')
-@php $locale = app()->getLocale(); $isRtl = in_array($locale, config('locales.rtl', [])); @endphp
+@php
+    $locale = app()->getLocale();
+    $isRtl = in_array($locale, config('locales.rtl', []));
+
+    $defaultHeroSlides = [
+        ['image' => 'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1920&q=80', 'alt' => 'Luxury Travel'],
+        ['image' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80', 'alt' => 'Beach Paradise'],
+        ['image' => 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80', 'alt' => 'Mountain Adventure'],
+        ['image' => 'https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=1920&q=80', 'alt' => 'Historic Destination'],
+        ['image' => 'https://images.unsplash.com/photo-1451337516015-6b6e9a44a8a3?w=1920&q=80', 'alt' => 'Desert Safari'],
+    ];
+
+    $heroSlides = ($sliders ?? collect())->map(function ($slider) use ($locale) {
+        $image = $slider->image;
+        if ($image && ! str_starts_with($image, 'http')) {
+            $image = asset('storage/' . ltrim($image, '/'));
+        }
+        return [
+            'image' => $image,
+            'alt' => $slider->getTranslation('title', $locale) ?: __('general.site_name'),
+        ];
+    })->filter(fn ($slide) => ! empty($slide['image']))->values();
+
+    if ($heroSlides->count() < 2) {
+        $heroSlides = collect($defaultHeroSlides);
+    }
+@endphp
 
 <!-- Hero Section -->
-<section class="relative h-screen min-h-[700px] flex items-center overflow-hidden">
-    <!-- Background -->
-    <div class="absolute inset-0">
-        <img src="https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1920&q=80"
-             alt="Luxury Travel" class="w-full h-full object-cover" loading="eager">
-        <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+<section
+    class="relative h-screen min-h-[700px] flex items-center overflow-hidden"
+    x-data="heroSlider"
+    data-slides='@json($heroSlides->values()->all())'
+>
+    <!-- Background Slideshow -->
+    <div class="absolute inset-0 bg-gray-900">
+        <template x-for="(slide, index) in slides" :key="index">
+            <img
+                :src="slide.image"
+                :alt="slide.alt"
+                class="hero-slide"
+                :class="current === index ? 'hero-slide-active' : 'hero-slide-inactive'"
+                :loading="index === 0 ? 'eager' : 'lazy'"
+            >
+        </template>
+        <div class="absolute inset-0 z-[2] bg-gradient-to-r from-black/70 via-black/50 to-black/30"></div>
+        <div class="absolute inset-0 z-[2] bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
     </div>
 
     <!-- Floating Elements -->
@@ -39,15 +76,13 @@
             <div class="flex flex-wrap gap-4 animate-slide-up animate-delay-300">
                 <a href="{{ route('packages.index', $locale) }}" class="btn-primary text-lg px-10 py-4">
                     {{ __('home.hero_cta') }}
-                    <svg class="w-5 h-5 {{ $isRtl ? 'mr-2 rotate-180' : 'ml-2' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                    </svg>
+                    <span class="btn-icon-wrap btn-icon-wrap-sm {{ $isRtl ? 'mr-1.5' : 'ml-1.5' }}">
+                        <x-icon name="{{ $isRtl ? 'arrow-left' : 'arrow-right' }}" class="w-3 h-3" />
+                    </span>
                 </a>
-                <a href="#" class="inline-flex items-center gap-3 px-8 py-4 text-white border-2 border-white/30 rounded-xl hover:bg-white/10 transition-all duration-300 font-semibold text-lg">
-                    <span class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
-                        <svg class="w-5 h-5 text-white {{ $isRtl ? '' : 'ml-0.5' }}" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z"/>
-                        </svg>
+                <a href="#" class="inline-flex items-center gap-2.5 px-8 py-4 text-white border-2 border-white/30 rounded-xl hover:bg-white/10 transition-all duration-300 font-semibold text-lg">
+                    <span class="btn-icon-wrap btn-icon-wrap-md">
+                        <x-icon name="play" class="w-3 h-3 text-white" />
                     </span>
                     {{ __('home.hero_cta_secondary') }}
                 </a>
@@ -55,49 +90,23 @@
         </div>
     </div>
 
+    <!-- Slide Indicators -->
+    <div class="absolute bottom-20 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2" x-show="slides.length > 1" x-cloak>
+        <template x-for="(slide, index) in slides" :key="'dot-' + index">
+            <button
+                type="button"
+                @click="goTo(index)"
+                class="h-2 rounded-full transition-all duration-300"
+                :class="current === index ? 'w-8 bg-white' : 'w-2 bg-white/40 hover:bg-white/70'"
+                :aria-label="'Slide ' + (index + 1)"
+            ></button>
+        </template>
+    </div>
+
     <!-- Scroll Indicator -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce-slow">
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce-slow">
         <div class="w-8 h-12 border-2 border-white/40 rounded-full flex justify-center pt-2">
             <div class="w-1.5 h-3 bg-white/60 rounded-full animate-pulse"></div>
-        </div>
-    </div>
-</section>
-
-<!-- Search Section -->
-<section class="relative -mt-24 z-20 pb-12">
-    <div class="container-custom">
-        <div class="glass rounded-3xl p-8 shadow-2xl">
-            <form action="{{ route('search', $locale) }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">{{ __('home.search_destination') }}</label>
-                    <div class="relative">
-                        <svg class="absolute {{ $isRtl ? 'right-4' : 'left-4' }} top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
-                        </svg>
-                        <input type="text" name="destination" placeholder="{{ __('home.search_destination') }}" class="input-luxury {{ $isRtl ? 'pr-12' : 'pl-12' }}">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">{{ __('home.search_date') }}</label>
-                    <input type="date" name="date" class="input-luxury">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">{{ __('home.search_guests') }}</label>
-                    <select name="guests" class="input-luxury">
-                        @for($i = 1; $i <= 10; $i++)
-                            <option value="{{ $i }}">{{ $i }} {{ __('general.guests') }}</option>
-                        @endfor
-                    </select>
-                </div>
-                <div>
-                    <button type="submit" class="btn-primary w-full py-4">
-                        <svg class="w-5 h-5 {{ $isRtl ? 'ml-2' : 'mr-2' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                        {{ __('home.search_btn') }}
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 </section>
@@ -162,9 +171,7 @@
             </div>
             <a href="{{ route('packages.index', $locale) }}" class="btn-secondary mt-6 md:mt-0">
                 {{ __('general.view_all') }}
-                <svg class="w-4 h-4 {{ $isRtl ? 'mr-2 rotate-180' : 'ml-2' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                </svg>
+                <x-icon name="{{ $isRtl ? 'arrow-left' : 'arrow-right' }}" class="w-3.5 h-3.5 {{ $isRtl ? 'mr-1.5' : 'ml-1.5' }}" />
             </a>
         </div>
 
@@ -250,19 +257,17 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             @php
                 $features = [
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>', 'title' => __('home.why_experience'), 'desc' => __('home.why_experience_desc')],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z"/>', 'title' => __('home.why_support'), 'desc' => __('home.why_support_desc')],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"/>', 'title' => __('home.why_custom'), 'desc' => __('home.why_custom_desc')],
-                    ['icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>', 'title' => __('home.why_value'), 'desc' => __('home.why_value_desc')],
+                    ['icon' => 'clock', 'title' => __('home.why_experience'), 'desc' => __('home.why_experience_desc')],
+                    ['icon' => 'headset', 'title' => __('home.why_support'), 'desc' => __('home.why_support_desc')],
+                    ['icon' => 'puzzle', 'title' => __('home.why_custom'), 'desc' => __('home.why_custom_desc')],
+                    ['icon' => 'currency', 'title' => __('home.why_value'), 'desc' => __('home.why_value_desc')],
                 ];
             @endphp
 
             @foreach($features as $index => $feature)
                 <div class="text-center p-6 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-500 group"
                      x-data x-intersect="$el.classList.add('animate-slide-up')" style="animation-delay: {{ $index * 100 }}ms">
-                    <div class="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-primary-400 to-primary-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">{!! $feature['icon'] !!}</svg>
-                    </div>
+                    <x-icon-box :name="$feature['icon']" size="md" variant="primary" class="mx-auto -mt-1 mb-4 group-hover:scale-105" />
                     <h3 class="text-lg font-bold text-white mb-3">{{ $feature['title'] }}</h3>
                     <p class="text-white/60 text-sm leading-relaxed">{{ $feature['desc'] }}</p>
                 </div>
@@ -310,9 +315,7 @@
                 <div class="card-glass">
                     <div class="flex items-center gap-1 mb-4">
                         @for($s = 1; $s <= 5; $s++)
-                            <svg class="w-5 h-5 {{ $s <= $testimonial->rating ? 'text-gold-400' : 'text-gray-300' }}" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                            </svg>
+                            <x-icon name="star" variant="solid" class="w-4 h-4 {{ $s <= $testimonial->rating ? 'text-gold-400' : 'text-gray-300' }}" />
                         @endfor
                     </div>
                     <p class="text-gray-600 mb-6 leading-relaxed italic">"{{ $testimonial->getTranslation('content', $locale) }}"</p>
@@ -336,9 +339,7 @@
                     <div class="card-glass">
                         <div class="flex items-center gap-1 mb-4">
                             @for($s = 1; $s <= 5; $s++)
-                                <svg class="w-5 h-5 text-gold-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                </svg>
+                                <x-icon name="star" variant="solid" class="w-4 h-4 text-gold-400" />
                             @endfor
                         </div>
                         <p class="text-gray-600 mb-6 leading-relaxed italic">"{{ $t['content'] }}"</p>

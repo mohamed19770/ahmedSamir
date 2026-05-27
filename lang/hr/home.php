@@ -12,6 +12,9 @@ return [
     'search_guests' => 'Gosti',
     'search_btn' => 'Pretraži',
 
+    'quick_links_title' => 'Istražite naše usluge',
+    'quick_links_subtitle' => 'Sve što vam treba za besprijekorno luksuzno putovanje',
+
     'destinations_title' => 'Istaknute destinacije',
     'destinations_subtitle' => 'Istražite našu odabranu kolekciju najljepših lokacija na svijetu',
 

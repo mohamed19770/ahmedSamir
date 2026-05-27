@@ -6,17 +6,10 @@
 <header x-data="navbar" :class="scrolled ? 'glass-navbar shadow-md' : 'bg-transparent'" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
     <div class="container-custom">
         <nav class="flex items-center justify-between h-20">
-            <!-- Logo -->
-            <a href="{{ route('home', $locale) }}" class="flex items-center gap-3 group">
-                <div class="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30 group-hover:shadow-primary-500/50 transition-shadow">
-                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-                <div>
-                    <span class="text-xl font-bold" :class="scrolled ? 'text-gray-900' : 'text-white'">Designation</span>
-                    <span class="text-xl font-light" :class="scrolled ? 'text-primary-600' : 'text-primary-300'"> 2 Go</span>
-                </div>
+            <!-- Brand -->
+            <a href="{{ route('home', $locale) }}" class="group">
+                <span class="text-xl font-bold transition-colors" :class="scrolled ? 'text-gray-900' : 'text-white'">Designation</span>
+                <span class="text-xl font-light transition-colors" :class="scrolled ? 'text-primary-600' : 'text-primary-300'"> 2 Go</span>
             </a>
 
             <!-- Desktop Navigation -->
@@ -51,9 +44,7 @@
                             :class="scrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white/90 hover:bg-white/10'">
                         <span>{{ config('locales.flags.' . $locale) }}</span>
                         <span class="hidden sm:inline">{{ config('locales.names.' . $locale) }}</span>
-                        <svg class="w-4 h-4 transition-transform" :class="open && 'rotate-180'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                        </svg>
+                        <x-icon name="chevron-down" class="w-3.5 h-3.5 transition-transform icon-lift" x-bind:class="open && 'rotate-180'" />
                     </button>
                     <div x-show="open" x-transition:enter="transition ease-out duration-200"
                          x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
@@ -67,9 +58,7 @@
                                 <span>{{ config('locales.flags.' . $loc) }}</span>
                                 <span class="font-medium">{{ config('locales.names.' . $loc) }}</span>
                                 @if($loc === $locale)
-                                    <svg class="w-4 h-4 {{ $isRtl ? 'mr-auto' : 'ml-auto' }} text-primary-600" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
+                                    <x-icon name="check" class="w-3.5 h-3.5 {{ $isRtl ? 'mr-auto' : 'ml-auto' }} text-primary-600" />
                                 @endif
                             </a>
                         @endforeach
@@ -80,20 +69,14 @@
                 <a href="{{ route('packages.index', $locale) }}"
                    class="hidden md:inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white text-sm font-semibold rounded-xl shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/40 hover:-translate-y-0.5 transition-all duration-300">
                     {{ __('general.book_now') }}
-                    <svg class="w-4 h-4 {{ $isRtl ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
-                    </svg>
+                    <x-icon name="{{ $isRtl ? 'arrow-left' : 'arrow-right' }}" class="w-3.5 h-3.5" />
                 </a>
 
                 <!-- Mobile Menu Toggle -->
                 <button @click="mobileOpen = !mobileOpen" class="lg:hidden p-2 rounded-lg transition-colors"
                         :class="scrolled ? 'text-gray-700 hover:bg-gray-100' : 'text-white hover:bg-white/10'">
-                    <svg x-show="!mobileOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                    <svg x-show="mobileOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
+                    <x-icon x-show="!mobileOpen" name="menu" class="w-5 h-5" />
+                    <x-icon x-show="mobileOpen" name="x" class="w-5 h-5" x-cloak />
                 </button>
             </div>
         </nav>

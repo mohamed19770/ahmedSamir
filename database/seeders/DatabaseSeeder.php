@@ -177,14 +177,47 @@ class DatabaseSeeder extends Seeder
 
     private function seedSliders(): void
     {
-        Slider::create([
-            'title' => ['en' => 'Discover Paradise', 'ar' => 'اكتشف الجنة', 'hr' => 'Otkrijte raj'],
-            'subtitle' => ['en' => 'Your Gateway to Extraordinary Journeys', 'ar' => 'بوابتك نحو رحلات استثنائية', 'hr' => 'Vaša vrata u izvanredna putovanja'],
-            'description' => ['en' => 'Experience luxury travel like never before.', 'ar' => 'استمتع بالسفر الفاخر كما لم تعهده من قبل.', 'hr' => 'Doživite luksuzno putovanje kao nikad prije.'],
-            'image' => 'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1920',
-            'button_text' => ['en' => 'Explore Packages', 'ar' => 'استكشف الباقات', 'hr' => 'Istraži pakete'],
-            'button_url' => '/en/packages', 'is_active' => true, 'sort_order' => 1,
-        ]);
+        $slides = [
+            [
+                'title' => ['en' => 'Discover Paradise', 'ar' => 'اكتشف الجنة', 'hr' => 'Otkrijte raj'],
+                'subtitle' => ['en' => 'Your Gateway to Extraordinary Journeys', 'ar' => 'بوابتك نحو رحلات استثنائية', 'hr' => 'Vaša vrata u izvanredna putovanja'],
+                'image' => 'https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=1920&q=80',
+                'sort_order' => 1,
+            ],
+            [
+                'title' => ['en' => 'Tropical Escapes', 'ar' => 'ملاذات استوائية', 'hr' => 'Tropski bijeg'],
+                'subtitle' => ['en' => 'Crystal waters & golden sunsets', 'ar' => 'مياه صافية وغروب ذهبي', 'hr' => 'Kristalno more i zlatni zalasci'],
+                'image' => 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80',
+                'sort_order' => 2,
+            ],
+            [
+                'title' => ['en' => 'Mountain Adventures', 'ar' => 'مغامرات جبلية', 'hr' => 'Planinske avanture'],
+                'subtitle' => ['en' => 'Breathtaking peaks await', 'ar' => 'قمم خلابة بانتظارك', 'hr' => 'Zadivljujući vrhovi čekaju'],
+                'image' => 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80',
+                'sort_order' => 3,
+            ],
+            [
+                'title' => ['en' => 'Historic Wonders', 'ar' => 'عجائب تاريخية', 'hr' => 'Povijesna čuda'],
+                'subtitle' => ['en' => 'Culture & heritage tours', 'ar' => 'جولات ثقافة وتراث', 'hr' => 'Kultura i baština'],
+                'image' => 'https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=1920&q=80',
+                'sort_order' => 4,
+            ],
+            [
+                'title' => ['en' => 'Desert Dreams', 'ar' => 'أحلام الصحراء', 'hr' => 'Pustinjski snovi'],
+                'subtitle' => ['en' => 'Luxury under the stars', 'ar' => 'فخامة تحت النجوم', 'hr' => 'Luksuz pod zvijezdama'],
+                'image' => 'https://images.unsplash.com/photo-1451337516015-6b6e9a44a8a3?w=1920&q=80',
+                'sort_order' => 5,
+            ],
+        ];
+
+        foreach ($slides as $slide) {
+            Slider::create(array_merge($slide, [
+                'description' => ['en' => 'Experience luxury travel like never before.', 'ar' => 'استمتع بالسفر الفاخر كما لم تعهده من قبل.', 'hr' => 'Doživite luksuzno putovanje kao nikad prije.'],
+                'button_text' => ['en' => 'Explore Packages', 'ar' => 'استكشف الباقات', 'hr' => 'Istraži pakete'],
+                'button_url' => '/en/packages',
+                'is_active' => true,
+            ]));
+        }
     }
 
     private function seedFaqs(): void

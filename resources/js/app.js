@@ -39,6 +39,38 @@ Alpine.data('counter', () => ({
     }
 }));
 
+Alpine.data('heroSlider', () => ({
+    current: 0,
+    slides: [],
+    interval: null,
+    duration: 5500,
+    init() {
+        try {
+            this.slides = JSON.parse(this.$el.dataset.slides || '[]');
+        } catch {
+            this.slides = [];
+        }
+        if (this.slides.length <= 1) return;
+        this.interval = setInterval(() => this.next(), this.duration);
+    },
+    next() {
+        this.current = (this.current + 1) % this.slides.length;
+    },
+    goTo(index) {
+        this.current = index;
+        this.resetAutoplay();
+    },
+    resetAutoplay() {
+        clearInterval(this.interval);
+        if (this.slides.length > 1) {
+            this.interval = setInterval(() => this.next(), this.duration);
+        }
+    },
+    destroy() {
+        clearInterval(this.interval);
+    },
+}));
+
 Alpine.data('gallery', () => ({
     lightboxOpen: false,
     currentImage: '',

@@ -99,6 +99,78 @@
     [dir="rtl"] .input-luxury {
         @apply text-right;
     }
+
+    /* Unified icon system */
+    .icon {
+        @apply shrink-0;
+    }
+
+    .icon-lift {
+        @apply relative -top-0.5;
+    }
+
+    .btn-primary .icon,
+    .btn-secondary .icon,
+    .btn-gold .icon {
+        @apply icon-lift;
+    }
+
+    .icon-box {
+        @apply inline-flex items-center justify-center rounded-xl transition-all duration-300;
+    }
+
+    .icon-box-sm { @apply w-8 h-8 rounded-lg; }
+    .icon-box-md { @apply w-10 h-10 rounded-lg; }
+    .icon-box-lg { @apply w-11 h-11 rounded-xl; }
+    .icon-box-xl { @apply w-12 h-12 rounded-xl; }
+
+    .icon-box-svg {
+        @apply w-[48%] h-[48%];
+    }
+
+    .icon-box-primary {
+        @apply bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-lg shadow-primary-500/30;
+    }
+
+    .icon-box-white {
+        @apply bg-white/15 text-white border border-white/25 backdrop-blur-sm;
+    }
+
+    .icon-box-glass {
+        @apply bg-white/80 text-primary-600 border border-primary-100 shadow-sm;
+    }
+
+    .icon-box-gold {
+        @apply bg-gradient-to-br from-gold-400 to-gold-600 text-white shadow-lg shadow-gold-500/25;
+    }
+
+    .btn-icon-wrap {
+        @apply inline-flex items-center justify-center rounded-full border border-white/35 bg-white/10 backdrop-blur-sm icon-lift;
+    }
+
+    .btn-icon-wrap-sm { @apply w-6 h-6; }
+    .btn-icon-wrap-md { @apply w-7 h-7; }
+    .btn-icon-wrap-lg { @apply w-8 h-8; }
+
+    .social-icon {
+        @apply inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white/10 text-white border border-white/15 hover:bg-primary-600 hover:border-primary-500 hover:text-white transition-all duration-300 hover:-translate-y-0.5;
+    }
+
+    .social-icon .icon {
+        @apply w-3.5 h-3.5;
+    }
+
+    .hero-slide {
+        @apply absolute inset-0 w-full h-full object-cover transition-opacity duration-[1.2s] ease-in-out;
+    }
+
+    .hero-slide-active {
+        @apply opacity-100 z-[1];
+    }
+
+    .hero-slide-inactive {
+        @apply opacity-0 z-0;
+    }
 }
 
 @layer utilities {
@@ -138,4 +210,13 @@
 
 [x-cloak] {
     display: none !important;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
 }

@@ -12,6 +12,9 @@ return [
     'search_guests' => 'Guests',
     'search_btn' => 'Search',
 
+    'quick_links_title' => 'Explore Our Services',
+    'quick_links_subtitle' => 'Everything you need for a seamless luxury journey',
+
     'destinations_title' => 'Featured Destinations',
     'destinations_subtitle' => 'Explore our handpicked collection of the world\'s most breathtaking locations',
 

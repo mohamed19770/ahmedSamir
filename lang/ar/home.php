@@ -12,6 +12,9 @@ return [
     'search_guests' => 'الضيوف',
     'search_btn' => 'بحث',
 
+    'quick_links_title' => 'استكشف خدماتنا',
+    'quick_links_subtitle' => 'كل ما تحتاجه لرحلة فاخرة بلا عناء',
+
     'destinations_title' => 'وجهات مميزة',
     'destinations_subtitle' => 'استكشف مجموعتنا المختارة من أروع المواقع في العالم',
 
