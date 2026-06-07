@@ -9,6 +9,12 @@ class ContactController extends Controller
 {
     public function index(string $locale)
     {
+        $this->shareSeo('contact');
+        $this->shareBreadcrumbs([
+            ['name' => __('general.home'), 'url' => route('home', $locale)],
+            ['name' => __('general.contact')],
+        ]);
+
         return view('pages.contact');
     }
 

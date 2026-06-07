@@ -1,19 +1,9 @@
 @extends('layouts.app')
 
-@section('meta_title', __('general.testimonials') . ' - ' . __('general.site_name'))
-
 @section('content')
 @php $locale = app()->getLocale(); $isRtl = in_array($locale, config('locales.rtl', [])); @endphp
 
-<!-- Hero -->
-<section class="relative pt-32 pb-20 bg-gradient-to-br from-primary-900 to-dark-900">
-    <div class="absolute inset-0 bg-gradient-to-b from-primary-900/90 to-dark-900/95"></div>
-    <div class="container-custom relative z-10">
-        <span class="inline-block px-4 py-1.5 bg-white/10 text-white/90 rounded-full text-sm font-semibold mb-6 backdrop-blur-sm border border-white/20">{{ __('general.testimonials') }}</span>
-        <h1 class="text-5xl lg:text-6xl font-bold text-white mb-4">{{ __('general.testimonials') }}</h1>
-        <p class="text-xl text-white/70 max-w-2xl">What our travelers say about their experiences with us.</p>
-    </div>
-</section>
+<x-page-hero :title="__('general.testimonials')" :badge="__('general.testimonials')" subtitle="What our travelers say about their experiences with us." />
 
 <!-- Testimonials -->
 <section class="section-padding">

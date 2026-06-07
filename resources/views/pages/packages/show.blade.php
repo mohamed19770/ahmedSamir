@@ -1,34 +1,13 @@
 @extends('layouts.app')
 
-@section('meta_title', ($package->getTranslation('meta_title', $locale) ?? $package->getTranslation('title', $locale)) . ' - ' . __('general.site_name'))
-@section('meta_description', $package->getTranslation('meta_description', $locale) ?? $package->getTranslation('short_description', $locale))
-
 @section('content')
 @php $locale = app()->getLocale(); $isRtl = in_array($locale, config('locales.rtl', [])); @endphp
 
-<!-- Hero -->
-<section class="relative h-[60vh] min-h-[500px]">
-    <img src="{{ $package->image }}" alt="{{ $package->getTranslation('title', $locale) }}" class="w-full h-full object-cover">
-    <div class="gradient-overlay"></div>
-    <div class="absolute bottom-0 left-0 right-0 p-8">
-        <div class="container-custom">
-            <div class="max-w-3xl">
-                <span class="inline-block px-3 py-1 bg-primary-500 text-white rounded-lg text-sm font-medium mb-4 capitalize">{{ $package->category }}</span>
-                <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4">{{ $package->getTranslation('title', $locale) }}</h1>
-                <div class="flex flex-wrap items-center gap-6 text-white/80">
-                    <span class="flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        {{ $package->duration_days }} {{ __('general.days') }} / {{ $package->duration_nights }} {{ __('general.nights') }}
-                    </span>
-                    <span class="flex items-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                        {{ $package->min_guests }}-{{ $package->max_guests }} {{ __('general.guests') }}
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+<x-page-hero
+    :title="$package->getTranslation('title', $locale)"
+    :badge="$package->category"
+    :subtitle="$package->duration_days.' '.__('general.days').' / '.$package->duration_nights.' '.__('general.nights')"
+/>
 
 <!-- Content -->
 <section class="section-padding">
@@ -43,7 +22,7 @@
                 <!-- Itinerary -->
                 @if($package->itinerary)
                     <div class="mb-12">
-                        <h2 class="text-2xl font-bold text-gray-900 mb-6">Itinerary</h2>
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ __('general.itinerary') }}</h2>
                         <div class="space-y-4" x-data="{ openDay: 0 }">
                             @foreach($package->itinerary as $index => $day)
                                 <div class="border border-gray-200 rounded-xl overflow-hidden">
@@ -68,7 +47,7 @@
                         <div>
                             <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                                 <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Included
+                                {{ __('general.included') }}
                             </h3>
                             <ul class="space-y-2">
                                 @foreach($package->included as $item)
@@ -84,7 +63,7 @@
                         <div>
                             <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
                                 <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Excluded
+                                {{ __('general.excluded') }}
                             </h3>
                             <ul class="space-y-2">
                                 @foreach($package->excluded as $item)
@@ -121,4 +100,45 @@
         </div>
     </div>
 </section>
+
+@if(($relatedPackages ?? collect())->isNotEmpty())
+<section class="section-padding bg-gray-50/50">
+    <div class="container-custom">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8">{{ __('general.related_tours') }}</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            @foreach($relatedPackages as $related)
+                <article class="card-luxury p-6">
+                    <a href="{{ route('tours.show', [$locale, $related->getTranslation('slug', $locale)]) }}">
+                        <h3 class="font-bold text-gray-900">{{ $related->getTranslation('title', $locale) }}</h3>
+                        <p class="text-primary-600 font-bold mt-2">${{ number_format($related->sale_price ?? $related->price) }}</p>
+                    </a>
+                </article>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+@if(($testimonials ?? collect())->isNotEmpty())
+<section class="section-padding">
+    <div class="container-custom">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8">{{ __('general.reviews') }}</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            @foreach($testimonials as $testimonial)
+                <article class="card-glass">
+                    <div class="flex gap-1 mb-3">
+                        @for($s = 1; $s <= 5; $s++)
+                            <x-icon name="star" variant="solid" class="w-4 h-4 {{ $s <= $testimonial->rating ? 'text-gold-400' : 'text-gray-300' }}" />
+                        @endfor
+                    </div>
+                    <p class="text-gray-600 italic mb-4">"{{ $testimonial->getTranslation('content', $locale) }}"</p>
+                    <p class="font-semibold text-gray-900">{{ $testimonial->name }}</p>
+                </article>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+<x-faq-section :faqs="$faqs ?? collect()" />
 @endsection

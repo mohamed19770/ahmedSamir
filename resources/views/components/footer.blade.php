@@ -16,22 +16,31 @@
             <!-- Brand -->
             <div class="lg:col-span-1">
                 <a href="{{ route('home', $locale) }}" class="inline-block mb-6">
-                    <span class="text-xl font-bold text-white">Designation</span>
-                    <span class="text-xl font-light text-primary-400"> 2 Go</span>
+                    <span class="text-xl font-bold text-white">Destination</span>
+                    <span class="text-xl font-light text-primary-400">2Go</span>
                 </a>
                 <p class="text-gray-400 mb-6 leading-relaxed">{{ __('general.tagline') }}</p>
+                <div class="flex gap-3 mb-8">
+                    @foreach(config('locales.supported') as $loc)
+                        <a href="{{ \App\Helpers\LocaleHelper::localizedUrl($loc) }}"
+                           class="px-3 py-1 rounded-lg text-sm {{ $loc === $locale ? 'bg-primary-600 text-white' : 'bg-gray-800 text-gray-400 hover:text-white' }}">
+                            {{ config('locales.flags.'.$loc) }} {{ strtoupper($loc) }}
+                        </a>
+                    @endforeach
+                </div>
                 <div class="flex gap-3">
-                    <a href="#" class="social-icon" aria-label="Facebook"><x-icon name="facebook" /></a>
-                    <a href="#" class="social-icon" aria-label="Instagram"><x-icon name="instagram" /></a>
-                    <a href="#" class="social-icon" aria-label="Twitter"><x-icon name="twitter" /></a>
+                    <a href="{{ config('site.social.facebook') }}" class="social-icon" aria-label="Facebook" rel="noopener"><x-icon name="facebook" /></a>
+                    <a href="{{ config('site.social.instagram') }}" class="social-icon" aria-label="Instagram" rel="noopener"><x-icon name="instagram" /></a>
+                    <a href="{{ config('site.social.twitter') }}" class="social-icon" aria-label="Twitter" rel="noopener"><x-icon name="twitter" /></a>
                 </div>
             </div>
 
             <!-- Quick Links -->
             <div>
-                <h4 class="text-lg font-semibold mb-6">{{ __('general.packages') }}</h4>
+                <h4 class="text-lg font-semibold mb-6">{{ __('general.tours') }}</h4>
                 <ul class="space-y-3">
-                    <li><a href="{{ route('packages.index', $locale) }}" class="text-gray-400 hover:text-primary-400 transition-colors">{{ __('general.packages') }}</a></li>
+                    <li><a href="{{ route('destinations.index', $locale) }}" class="text-gray-400 hover:text-primary-400 transition-colors">{{ __('general.destinations') }}</a></li>
+                    <li><a href="{{ route('tours.index', $locale) }}" class="text-gray-400 hover:text-primary-400 transition-colors">{{ __('general.tours') }}</a></li>
                     <li><a href="{{ route('activities.index', $locale) }}" class="text-gray-400 hover:text-primary-400 transition-colors">{{ __('general.activities') }}</a></li>
                     <li><a href="{{ route('hotels.index', $locale) }}" class="text-gray-400 hover:text-primary-400 transition-colors">{{ __('general.hotels') }}</a></li>
                     <li><a href="{{ route('transport.index', $locale) }}" class="text-gray-400 hover:text-primary-400 transition-colors">{{ __('general.transportation') }}</a></li>
@@ -57,15 +66,15 @@
                 <ul class="space-y-4">
                     <li class="flex items-start gap-3">
                         <x-icon name="map-pin" class="w-4 h-4 text-primary-400 shrink-0 icon-lift" />
-                        <span class="text-gray-400">123 Travel Street, Tourism City</span>
+                        <span class="text-gray-400">{{ config('site.address.street') }}, {{ config('site.address.city') }}</span>
                     </li>
                     <li class="flex items-center gap-3">
                         <x-icon name="envelope" class="w-4 h-4 text-primary-400 shrink-0 icon-lift" />
-                        <a href="mailto:info@designation2go.com" class="text-gray-400 hover:text-primary-400 transition-colors">info@designation2go.com</a>
+                        <a href="mailto:{{ config('site.email') }}" class="text-gray-400 hover:text-primary-400 transition-colors">{{ config('site.email') }}</a>
                     </li>
                     <li class="flex items-center gap-3">
                         <x-icon name="phone" class="w-4 h-4 text-primary-400 shrink-0 icon-lift" />
-                        <a href="tel:+1234567890" class="text-gray-400 hover:text-primary-400 transition-colors">+1 (234) 567-890</a>
+                        <a href="tel:{{ config('site.phone') }}" class="text-gray-400 hover:text-primary-400 transition-colors">{{ config('site.phone') }}</a>
                     </li>
                 </ul>
             </div>

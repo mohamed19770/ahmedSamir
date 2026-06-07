@@ -10,11 +10,23 @@ window.Alpine = Alpine;
 Alpine.data('navbar', () => ({
     scrolled: false,
     mobileOpen: false,
+    overlay: false,
     init() {
+        this.overlay = this.$el.dataset.overlay === 'true';
+        this.scrolled = !this.overlay;
+
         window.addEventListener('scroll', () => {
-            this.scrolled = window.scrollY > 50;
-        });
-    }
+            if (this.overlay) {
+                this.scrolled = window.scrollY > 50;
+            }
+            if (this.mobileOpen && window.scrollY > 80) {
+                this.mobileOpen = false;
+            }
+        }, { passive: true });
+    },
+    isSolid() {
+        return !this.overlay || this.scrolled;
+    },
 }));
 
 Alpine.data('counter', () => ({
@@ -50,15 +62,28 @@ Alpine.data('heroSlider', () => ({
         } catch {
             this.slides = [];
         }
+        this.$el.querySelectorAll('[data-slide-index]').forEach((el) => {
+            el.classList.toggle('hero-slide-active', Number(el.dataset.slideIndex) === this.current);
+            el.classList.toggle('hero-slide-inactive', Number(el.dataset.slideIndex) !== this.current);
+        });
         if (this.slides.length <= 1) return;
         this.interval = setInterval(() => this.next(), this.duration);
     },
     next() {
         this.current = (this.current + 1) % this.slides.length;
+        this.syncSlides();
     },
     goTo(index) {
         this.current = index;
+        this.syncSlides();
         this.resetAutoplay();
+    },
+    syncSlides() {
+        this.$el.querySelectorAll('[data-slide-index]').forEach((el) => {
+            const index = Number(el.dataset.slideIndex);
+            el.classList.toggle('hero-slide-active', index === this.current);
+            el.classList.toggle('hero-slide-inactive', index !== this.current);
+        });
     },
     resetAutoplay() {
         clearInterval(this.interval);

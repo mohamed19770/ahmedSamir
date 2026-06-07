@@ -16,7 +16,7 @@ class TourismPackage extends Model
         'duration_days', 'duration_nights', 'price', 'sale_price', 'currency',
         'included', 'excluded', 'itinerary', 'image', 'gallery', 'max_guests',
         'min_guests', 'is_featured', 'is_active', 'difficulty_level', 'category',
-        'meta_title', 'meta_description', 'sort_order',
+        'meta_title', 'meta_description', 'meta_keywords', 'sort_order',
     ];
 
     protected $casts = [
@@ -30,13 +30,14 @@ class TourismPackage extends Model
         'gallery' => 'array',
         'meta_title' => 'array',
         'meta_description' => 'array',
+        'meta_keywords' => 'array',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
         'price' => 'decimal:2',
         'sale_price' => 'decimal:2',
     ];
 
-    protected array $translatable = ['title', 'slug', 'description', 'short_description', 'meta_title', 'meta_description'];
+    protected array $translatable = ['title', 'slug', 'description', 'short_description', 'meta_title', 'meta_description', 'meta_keywords'];
 
     public function destination(): BelongsTo
     {

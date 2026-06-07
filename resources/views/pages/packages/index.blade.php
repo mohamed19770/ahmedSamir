@@ -1,22 +1,9 @@
 @extends('layouts.app')
 
-@section('meta_title', __('general.packages') . ' - ' . __('general.site_name'))
-
 @section('content')
 @php $locale = app()->getLocale(); $isRtl = in_array($locale, config('locales.rtl', [])); @endphp
 
-<!-- Hero -->
-<section class="relative pt-32 pb-20 bg-gradient-to-br from-primary-900 to-dark-900">
-    <div class="absolute inset-0 opacity-20">
-        <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920" alt="" class="w-full h-full object-cover">
-    </div>
-    <div class="absolute inset-0 bg-gradient-to-b from-primary-900/80 to-dark-900/90"></div>
-    <div class="container-custom relative z-10">
-        <span class="inline-block px-4 py-1.5 bg-white/10 text-white/90 rounded-full text-sm font-semibold mb-6 backdrop-blur-sm border border-white/20">{{ __('general.packages') }}</span>
-        <h1 class="text-5xl lg:text-6xl font-bold text-white mb-4">{{ __('general.packages') }}</h1>
-        <p class="text-xl text-white/70 max-w-2xl">Discover our curated selection of premium travel packages designed for unforgettable experiences.</p>
-    </div>
-</section>
+<x-page-hero :title="__('general.tours')" :badge="__('general.tours')" :subtitle="__('seo.tours_description')" />
 
 <!-- Filters -->
 <section class="py-8 bg-white border-b border-gray-100 sticky top-20 z-30 glass-navbar">
@@ -39,22 +26,16 @@
     <div class="container-custom">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @forelse($packages ?? [] as $index => $package)
-                <div class="card-luxury" x-data x-intersect="$el.classList.add('animate-slide-up')" style="animation-delay: {{ ($index % 3) * 100 }}ms">
-                    <div class="relative h-56 overflow-hidden">
-                        <img src="{{ $package->image ?? 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800' }}"
-                             alt="{{ $package->getTranslation('title', $locale) }}"
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" loading="lazy">
-                        @if($package->sale_price)
-                            <div class="absolute top-4 {{ $isRtl ? 'left-4' : 'right-4' }} bg-red-500 text-white px-3 py-1 rounded-lg text-sm font-bold">
-                                -{{ round((($package->price - $package->sale_price) / $package->price) * 100) }}%
-                            </div>
-                        @endif
-                        <div class="absolute top-4 {{ $isRtl ? 'right-4' : 'left-4' }} bg-white/90 backdrop-blur-sm px-3 py-1 rounded-lg text-sm font-semibold text-gray-700">
-                            {{ $package->duration_days }} {{ __('general.days') }} / {{ $package->duration_nights }} {{ __('general.nights') }}
-                        </div>
-                    </div>
-                    <div class="p-6">
-                        <div class="flex items-center gap-2 mb-3">
+                <div class="card-luxury p-6" x-data x-intersect="$el.classList.add('animate-slide-up')" style="animation-delay: {{ ($index % 3) * 100 }}ms">
+                        <div class="flex items-center gap-2 mb-3 flex-wrap">
+                            <span class="px-2.5 py-0.5 bg-gray-100 text-gray-700 rounded-md text-xs font-medium">
+                                {{ $package->duration_days }} {{ __('general.days') }} / {{ $package->duration_nights }} {{ __('general.nights') }}
+                            </span>
+                            @if($package->sale_price)
+                                <span class="px-2.5 py-0.5 bg-red-50 text-red-700 rounded-md text-xs font-bold">
+                                    -{{ round((($package->price - $package->sale_price) / $package->price) * 100) }}%
+                                </span>
+                            @endif
                             <span class="px-2.5 py-0.5 bg-primary-50 text-primary-700 rounded-md text-xs font-medium capitalize">{{ $package->category }}</span>
                             @if($package->is_featured)
                                 <span class="px-2.5 py-0.5 bg-gold-50 text-gold-700 rounded-md text-xs font-medium">{{ __('general.featured') }}</span>
@@ -76,7 +57,6 @@
                                 {{ __('general.book_now') }}
                             </a>
                         </div>
-                    </div>
                 </div>
             @empty
                 <div class="col-span-full text-center py-20">
@@ -84,7 +64,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
                     </svg>
                     <h3 class="text-2xl font-bold text-gray-400 mb-2">{{ __('general.no_results') }}</h3>
-                    <p class="text-gray-400">Check back soon for new packages.</p>
+                    <p class="text-gray-400">{{ __('home.empty_packages') }}</p>
                 </div>
             @endforelse
         </div>

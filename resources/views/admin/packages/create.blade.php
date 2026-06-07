@@ -102,6 +102,8 @@
             </div>
         </div>
 
+        <x-admin-seo-fields :model="$package ?? null" />
+
         <!-- Submit -->
         <div class="flex items-center gap-4">
             <button type="submit" class="btn-primary">

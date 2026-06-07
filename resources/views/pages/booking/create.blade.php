@@ -1,17 +1,9 @@
 @extends('layouts.app')
 
-@section('meta_title', __('general.book_now') . ' - ' . __('general.site_name'))
-
 @section('content')
 @php $locale = app()->getLocale(); $isRtl = in_array($locale, config('locales.rtl', [])); @endphp
 
-<!-- Hero -->
-<section class="relative pt-32 pb-16 bg-gradient-to-br from-primary-900 to-dark-900">
-    <div class="container-custom relative z-10">
-        <h1 class="text-4xl lg:text-5xl font-bold text-white mb-4">{{ __('general.book_now') }}</h1>
-        <p class="text-xl text-white/70">Complete your booking in just a few steps.</p>
-    </div>
-</section>
+<x-page-hero :title="__('general.book_now')" subtitle="Complete your booking in just a few steps." />
 
 <!-- Booking Form -->
 <section class="section-padding">

@@ -3,7 +3,9 @@
 @section('content')
 @php $locale = app()->getLocale(); @endphp
 
-<section class="pt-32 pb-20">
+<x-page-hero title="Booking Confirmed" badge="Success" subtitle="Your booking has been successfully submitted." />
+
+<section class="section-padding bg-gray-50/50">
     <div class="container-custom max-w-2xl text-center">
         <div class="bg-white rounded-3xl shadow-xl p-12 border border-gray-100">
             <div class="w-20 h-20 mx-auto mb-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -46,7 +48,7 @@
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <a href="{{ route('home', $locale) }}" class="btn-primary">Back to Home</a>
-                <a href="{{ route('packages.index', $locale) }}" class="btn-secondary">Browse Packages</a>
+                <a href="{{ route('tours.index', $locale) }}" class="btn-secondary">Browse Tours</a>
             </div>
         </div>
     </div>

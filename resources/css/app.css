@@ -1,12 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap');
-
 @layer base {
     html {
         scroll-behavior: smooth;
+    }
+
+    img:not(.hero-slide-img) {
+        content-visibility: auto;
     }
 
     body {
@@ -41,7 +45,31 @@
     }
 
     .glass-navbar {
-        @apply bg-white/80 backdrop-blur-2xl border-b border-white/20 shadow-sm;
+        @apply bg-white/95 backdrop-blur-xl border-b border-gray-200/70 shadow-sm;
+    }
+
+    .navbar-overlay {
+        @apply bg-transparent border-b border-transparent shadow-none;
+    }
+
+    .navbar-link {
+        @apply px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300;
+    }
+
+    .navbar-link-solid {
+        @apply text-gray-600 hover:text-primary-700 hover:bg-primary-50;
+    }
+
+    .navbar-link-solid-active {
+        @apply text-primary-700 bg-primary-50 font-semibold;
+    }
+
+    .navbar-link-overlay {
+        @apply text-white/90 hover:text-white hover:bg-white/10;
+    }
+
+    .navbar-link-overlay-active {
+        @apply text-white bg-white/15 font-semibold;
     }
 
     .btn-primary {
@@ -161,7 +189,12 @@
     }
 
     .hero-slide {
+        @apply absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[1.2s] ease-in-out;
+    }
+
+    .hero-slide-img {
         @apply absolute inset-0 w-full h-full object-cover transition-opacity duration-[1.2s] ease-in-out;
+        content-visibility: visible !important;
     }
 
     .hero-slide-active {

@@ -17,6 +17,10 @@ use App\Http\Controllers\CareerController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\NewsletterController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\DestinationController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\LlmsController;
+use App\Helpers\LocaleHelper;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PackageController as AdminPackageController;
 use App\Http\Controllers\Admin\ActivityController as AdminActivityController;
@@ -34,8 +38,15 @@ use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\AdminMiddleware;
 
 Route::get('/', function () {
-    return redirect('/' . config('app.locale', 'en'));
+    $locale = request()->cookie('locale') ?: LocaleHelper::detectFromRequest(request());
+
+    return redirect('/'.$locale)->cookie('locale', $locale, 60 * 24 * 365);
 });
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap.index');
+Route::get('/sitemap-{locale}.xml', [SitemapController::class, 'locale'])->where('locale', 'en|ar|hr')->name('sitemap.locale');
+Route::get('/ai-sitemap.xml', [SitemapController::class, 'ai'])->name('sitemap.ai');
+Route::get('/llms.txt', [LlmsController::class, 'index'])->name('llms');
 
 Route::prefix('{locale}')
     ->where(['locale' => 'en|ar|hr'])
@@ -45,8 +56,13 @@ Route::prefix('{locale}')
         Route::get('/', [HomeController::class, 'index'])->name('home');
         Route::get('/about', [AboutController::class, 'index'])->name('about');
 
-        Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');
-        Route::get('/packages/{slug}', [PackageController::class, 'show'])->name('packages.show');
+        Route::get('/destinations', [DestinationController::class, 'index'])->name('destinations.index');
+        Route::get('/destinations/{slug}', [DestinationController::class, 'show'])->name('destinations.show');
+
+        Route::get('/tours', [PackageController::class, 'index'])->name('tours.index');
+        Route::get('/tours/{slug}', [PackageController::class, 'show'])->name('tours.show');
+        Route::get('/packages', fn (string $locale) => redirect()->route('tours.index', $locale, 301))->name('packages.index');
+        Route::get('/packages/{slug}', fn (string $locale, string $slug) => redirect()->route('tours.show', [$locale, $slug], 301))->name('packages.show');
 
         Route::get('/activities', [ActivityController::class, 'index'])->name('activities.index');
         Route::get('/activities/{slug}', [ActivityController::class, 'show'])->name('activities.show');

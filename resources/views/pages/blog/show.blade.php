@@ -1,8 +1,5 @@
 @extends('layouts.app')
 
-@section('meta_title', $post->getTranslation('meta_title', $locale) ?? $post->getTranslation('title', $locale))
-@section('meta_description', $post->getTranslation('meta_description', $locale) ?? $post->getTranslation('excerpt', $locale))
-
 @section('content')
 @php $locale = app()->getLocale(); $isRtl = in_array($locale, config('locales.rtl', [])); @endphp
 

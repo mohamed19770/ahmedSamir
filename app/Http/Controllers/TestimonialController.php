@@ -9,6 +9,13 @@ class TestimonialController extends Controller
     public function index(string $locale)
     {
         $testimonials = Testimonial::active()->orderBy('sort_order')->paginate(12);
+
+        $this->shareSeo('testimonials');
+        $this->shareBreadcrumbs([
+            ['name' => __('general.home'), 'url' => route('home', $locale)],
+            ['name' => __('general.testimonials')],
+        ]);
+
         return view('pages.testimonials', compact('testimonials'));
     }
 }

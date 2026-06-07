@@ -13,7 +13,7 @@ class Activity extends Model
     protected $fillable = [
         'title', 'slug', 'description', 'short_description', 'image', 'gallery',
         'price', 'duration', 'category', 'location', 'is_featured', 'is_active',
-        'meta_title', 'meta_description', 'sort_order',
+        'meta_title', 'meta_description', 'meta_keywords', 'sort_order',
     ];
 
     protected $casts = [
@@ -24,12 +24,13 @@ class Activity extends Model
         'gallery' => 'array',
         'meta_title' => 'array',
         'meta_description' => 'array',
+        'meta_keywords' => 'array',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
         'price' => 'decimal:2',
     ];
 
-    protected array $translatable = ['title', 'slug', 'description', 'short_description', 'meta_title', 'meta_description'];
+    protected array $translatable = ['title', 'slug', 'description', 'short_description', 'meta_title', 'meta_description', 'meta_keywords'];
 
     public function bookings(): HasMany
     {

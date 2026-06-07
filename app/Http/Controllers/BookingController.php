@@ -17,6 +17,8 @@ class BookingController extends Controller
             default => abort(404),
         };
 
+        $this->shareSeo('booking', ['robots' => 'noindex, follow']);
+
         return view('pages.booking.create', compact('type', 'item'));
     }
 
@@ -63,6 +65,9 @@ class BookingController extends Controller
     public function confirmation(string $locale, string $bookingNumber)
     {
         $booking = Booking::where('booking_number', $bookingNumber)->firstOrFail();
+
+        $this->shareSeo('booking', ['robots' => 'noindex, follow']);
+
         return view('pages.booking.confirmation', compact('booking'));
     }
 }

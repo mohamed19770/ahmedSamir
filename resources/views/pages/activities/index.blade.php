@@ -1,22 +1,9 @@
 @extends('layouts.app')
 
-@section('meta_title', __('general.activities') . ' - ' . __('general.site_name'))
-
 @section('content')
 @php $locale = app()->getLocale(); $isRtl = in_array($locale, config('locales.rtl', [])); @endphp
 
-<!-- Hero -->
-<section class="relative pt-32 pb-20 bg-gradient-to-br from-primary-900 to-dark-900">
-    <div class="absolute inset-0 opacity-20">
-        <img src="https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=1920" alt="" class="w-full h-full object-cover">
-    </div>
-    <div class="absolute inset-0 bg-gradient-to-b from-primary-900/80 to-dark-900/90"></div>
-    <div class="container-custom relative z-10">
-        <span class="inline-block px-4 py-1.5 bg-white/10 text-white/90 rounded-full text-sm font-semibold mb-6 backdrop-blur-sm border border-white/20">{{ __('general.activities') }}</span>
-        <h1 class="text-5xl lg:text-6xl font-bold text-white mb-4">{{ __('general.activities') }}</h1>
-        <p class="text-xl text-white/70 max-w-2xl">From adrenaline-pumping adventures to serene cultural experiences.</p>
-    </div>
-</section>
+<x-page-hero :title="__('general.activities')" :badge="__('general.activities')" subtitle="From adrenaline-pumping adventures to serene cultural experiences." />
 
 <!-- Activities Grid -->
 <section class="section-padding">

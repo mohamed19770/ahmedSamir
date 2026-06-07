@@ -20,6 +20,12 @@ class SetLocale
             app()->setLocale(config('app.locale', 'en'));
         }
 
-        return $next($request);
+        $response = $next($request);
+
+        if (in_array($locale, $this->supportedLocales)) {
+            return $response->cookie('locale', $locale, 60 * 24 * 365);
+        }
+
+        return $response;
     }
 }

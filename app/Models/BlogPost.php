@@ -12,7 +12,7 @@ class BlogPost extends Model
 
     protected $fillable = [
         'author_id', 'title', 'slug', 'content', 'excerpt', 'image', 'category',
-        'tags', 'is_published', 'published_at', 'views_count', 'meta_title', 'meta_description',
+        'tags', 'is_published', 'published_at', 'views_count', 'meta_title', 'meta_description', 'meta_keywords',
     ];
 
     protected $casts = [
@@ -23,11 +23,12 @@ class BlogPost extends Model
         'tags' => 'array',
         'meta_title' => 'array',
         'meta_description' => 'array',
+        'meta_keywords' => 'array',
         'is_published' => 'boolean',
         'published_at' => 'datetime',
     ];
 
-    protected array $translatable = ['title', 'slug', 'content', 'excerpt', 'meta_title', 'meta_description'];
+    protected array $translatable = ['title', 'slug', 'content', 'excerpt', 'meta_title', 'meta_description', 'meta_keywords'];
 
     public function author(): BelongsTo
     {

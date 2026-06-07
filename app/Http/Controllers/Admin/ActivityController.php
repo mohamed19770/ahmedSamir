@@ -25,6 +25,9 @@ class ActivityController extends Controller
             'price' => 'required|numeric|min:0', 'duration' => 'required|string',
             'category' => 'required|string', 'location' => 'nullable|string',
             'image' => 'nullable|image|max:5120',
+            'meta_title' => 'nullable|array',
+            'meta_description' => 'nullable|array',
+            'meta_keywords' => 'nullable|array',
         ]);
 
         $slug = [];
@@ -43,8 +46,14 @@ class ActivityController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|array', 'title.en' => 'required|string|max:255',
-            'description' => 'required|array', 'price' => 'required|numeric|min:0',
+            'description' => 'required|array', 'short_description' => 'nullable|array',
+            'price' => 'required|numeric|min:0',
             'duration' => 'required|string', 'category' => 'required|string',
+            'location' => 'nullable|string',
+            'image' => 'nullable|image|max:5120',
+            'meta_title' => 'nullable|array',
+            'meta_description' => 'nullable|array',
+            'meta_keywords' => 'nullable|array',
         ]);
 
         $slug = [];

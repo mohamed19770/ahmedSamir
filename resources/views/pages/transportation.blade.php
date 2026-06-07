@@ -1,22 +1,9 @@
 @extends('layouts.app')
 
-@section('meta_title', __('general.transportation') . ' - ' . __('general.site_name'))
-
 @section('content')
 @php $locale = app()->getLocale(); $isRtl = in_array($locale, config('locales.rtl', [])); @endphp
 
-<!-- Hero -->
-<section class="relative pt-32 pb-20 bg-gradient-to-br from-primary-900 to-dark-900">
-    <div class="absolute inset-0 opacity-20">
-        <img src="https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1920" alt="" class="w-full h-full object-cover">
-    </div>
-    <div class="absolute inset-0 bg-gradient-to-b from-primary-900/80 to-dark-900/90"></div>
-    <div class="container-custom relative z-10">
-        <span class="inline-block px-4 py-1.5 bg-white/10 text-white/90 rounded-full text-sm font-semibold mb-6 backdrop-blur-sm border border-white/20">{{ __('general.transportation') }}</span>
-        <h1 class="text-5xl lg:text-6xl font-bold text-white mb-4">{{ __('general.transportation') }}</h1>
-        <p class="text-xl text-white/70 max-w-2xl">Premium transportation services for a seamless travel experience.</p>
-    </div>
-</section>
+<x-page-hero :title="__('general.transportation')" :badge="__('general.transportation')" subtitle="Premium transportation services for a seamless travel experience." />
 
 <!-- Services -->
 <section class="section-padding">

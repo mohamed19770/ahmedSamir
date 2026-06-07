@@ -36,6 +36,9 @@ class PackageController extends Controller
             'category' => 'required|string',
             'max_guests' => 'nullable|integer|min:1',
             'image' => 'nullable|image|max:5120',
+            'meta_title' => 'nullable|array',
+            'meta_description' => 'nullable|array',
+            'meta_keywords' => 'nullable|array',
         ]);
 
         $slug = [];
@@ -78,6 +81,9 @@ class PackageController extends Controller
             'category' => 'required|string',
             'max_guests' => 'nullable|integer|min:1',
             'image' => 'nullable|image|max:5120',
+            'meta_title' => 'nullable|array',
+            'meta_description' => 'nullable|array',
+            'meta_keywords' => 'nullable|array',
         ]);
 
         $slug = [];

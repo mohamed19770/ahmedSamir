@@ -13,7 +13,7 @@ class Destination extends Model
     protected $fillable = [
         'name', 'slug', 'description', 'short_description', 'country', 'city',
         'image', 'gallery', 'latitude', 'longitude', 'is_featured', 'is_active',
-        'meta_title', 'meta_description', 'sort_order',
+        'meta_title', 'meta_description', 'meta_keywords', 'sort_order',
     ];
 
     protected $casts = [
@@ -24,11 +24,12 @@ class Destination extends Model
         'gallery' => 'array',
         'meta_title' => 'array',
         'meta_description' => 'array',
+        'meta_keywords' => 'array',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
     ];
 
-    protected array $translatable = ['name', 'slug', 'description', 'short_description', 'meta_title', 'meta_description'];
+    protected array $translatable = ['name', 'slug', 'description', 'short_description', 'meta_title', 'meta_description', 'meta_keywords'];
 
     public function packages(): HasMany
     {

@@ -1,13 +1,12 @@
 @extends('layouts.app')
 
-@section('meta_title', __('general.search') . ' - ' . __('general.site_name'))
-
 @section('content')
 @php $locale = app()->getLocale(); $isRtl = in_array($locale, config('locales.rtl', [])); @endphp
 
-<section class="pt-32 pb-12 bg-gradient-to-br from-primary-900 to-dark-900">
+<x-page-hero :title="__('general.search')" :badge="__('general.search')" />
+
+<section class="bg-gradient-to-br from-primary-900 via-primary-800 to-dark-900 pb-12">
     <div class="container-custom">
-        <h1 class="text-4xl font-bold text-white mb-6">{{ __('general.search') }}</h1>
         <form action="{{ route('search', $locale) }}" method="GET" class="max-w-xl">
             <div class="relative">
                 <input type="text" name="q" value="{{ $query }}" placeholder="{{ __('home.search_destination') }}" class="w-full px-6 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl text-white placeholder-white/60 focus:ring-2 focus:ring-white/40 outline-none {{ $isRtl ? 'pr-14' : 'pl-14' }}">
@@ -29,7 +28,7 @@
             <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ __('general.packages') }}</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                 @foreach($packages as $package)
-                    <a href="{{ route('packages.show', [$locale, $package->getTranslation('slug', $locale)]) }}" class="card-luxury p-4">
+                    <a href="{{ route('tours.show', [$locale, $package->getTranslation('slug', $locale)]) }}" class="card-luxury p-4">
                         <div class="flex gap-4">
                             <img src="{{ $package->image }}" alt="" class="w-20 h-20 rounded-xl object-cover shrink-0">
                             <div>
