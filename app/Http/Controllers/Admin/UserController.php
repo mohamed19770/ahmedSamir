@@ -15,11 +15,15 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255', 'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8', 'role' => 'required|in:admin,editor,user',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|string|min:8',
+            'role' => 'required|in:admin,editor,user',
         ]);
         $validated['password'] = Hash::make($validated['password']);
+        $validated['is_active'] = true;
         User::create($validated);
+
         return redirect()->route('admin.users.index')->with('success', 'User created.');
     }
 
@@ -28,11 +32,23 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255', 'email' => 'required|email|unique:users,email,' . $user->id,
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,'.$user->id,
             'role' => 'required|in:admin,editor,user',
+            'password' => 'nullable|string|min:8',
+            'is_active' => 'sometimes|boolean',
         ]);
-        if ($request->filled('password')) { $validated['password'] = Hash::make($request->password); }
+
+        if ($request->filled('password')) {
+            $validated['password'] = Hash::make($request->password);
+        } else {
+            unset($validated['password']);
+        }
+
+        $validated['is_active'] = $request->boolean('is_active', $user->is_active);
+
         $user->update($validated);
+
         return redirect()->route('admin.users.index')->with('success', 'User updated.');
     }
 

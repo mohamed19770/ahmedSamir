@@ -28,7 +28,7 @@ class SeoController extends Controller
             'meta_keywords.en' => 'nullable|string|max:1000',
             'meta_keywords.ar' => 'nullable|string|max:1000',
             'meta_keywords.hr' => 'nullable|string|max:1000',
-            'og_image' => 'nullable|string',
+            'og_image' => 'nullable|url|max:500',
             'canonical_url' => 'nullable|url',
         ]);
 

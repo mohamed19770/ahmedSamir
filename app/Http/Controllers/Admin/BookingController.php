@@ -10,6 +10,10 @@ class BookingController extends Controller
 {
     public function index(Request $request)
     {
+        $request->validate([
+            'status' => 'nullable|in:pending,confirmed,cancelled,completed',
+        ]);
+
         $query = Booking::with(['package', 'activity', 'user'])->latest();
 
         if ($request->filled('status')) {

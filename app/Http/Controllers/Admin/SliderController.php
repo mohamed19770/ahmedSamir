@@ -29,6 +29,28 @@ class SliderController extends Controller
     }
 
     public function edit(Slider $slider) { return view('admin.sliders.create', compact('slider')); }
-    public function update(Request $request, Slider $slider) { $slider->update($request->except('image')); if ($request->hasFile('image')) { $slider->update(['image' => $request->file('image')->store('sliders', 'public')]); } return redirect()->route('admin.sliders.index')->with('success', 'Updated.'); }
+    public function update(Request $request, Slider $slider)
+    {
+        $validated = $request->validate([
+            'title' => 'sometimes|array',
+            'subtitle' => 'nullable|array',
+            'description' => 'nullable|array',
+            'button_text' => 'nullable|array',
+            'button_url' => 'nullable|string|max:500',
+            'image' => 'nullable|image|max:10240',
+            'is_active' => 'sometimes|boolean',
+            'sort_order' => 'sometimes|integer|min:0',
+        ]);
+
+        $validated['is_active'] = $request->boolean('is_active', $slider->is_active);
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('sliders', 'public');
+        }
+
+        $slider->update($validated);
+
+        return redirect()->route('admin.sliders.index')->with('success', 'Updated.');
+    }
     public function destroy(Slider $slider) { $slider->delete(); return redirect()->route('admin.sliders.index')->with('success', 'Deleted.'); }
 }

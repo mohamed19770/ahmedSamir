@@ -16,7 +16,6 @@
     "dependencies": {
         "alpinejs": "^3.14.8",
         "@alpinejs/intersect": "^3.14.8",
-        "@alpinejs/collapse": "^3.14.8",
-        "swiper": "^11.1.15"
+        "@alpinejs/collapse": "^3.14.8"
     }
 }

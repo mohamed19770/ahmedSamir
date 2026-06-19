@@ -10,6 +10,11 @@ class InquiryController extends Controller
 {
     public function index(Request $request)
     {
+        $request->validate([
+            'status' => 'nullable|in:new,read,replied,closed',
+            'type' => 'nullable|in:general,booking,visa,transport,custom',
+        ]);
+
         $query = Inquiry::latest();
         if ($request->filled('status')) { $query->byStatus($request->status); }
         if ($request->filled('type')) { $query->byType($request->type); }

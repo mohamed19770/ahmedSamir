@@ -40,18 +40,13 @@
     data-slides='@json($heroSlides->all())'
 >
     <div class="absolute inset-0 bg-gray-900">
-        @foreach($heroSlides as $index => $slide)
-            <img
-                src="{{ $slide['image'] }}"
-                alt="{{ $slide['alt'] }}"
-                class="hero-slide-img {{ $index === 0 ? 'hero-slide-active' : 'hero-slide-inactive' }}"
-                width="3840"
-                height="2160"
-                @if($index === 0) fetchpriority="high" @else loading="lazy" @endif
-                decoding="async"
-                data-slide-index="{{ $index }}"
-            >
-        @endforeach
+        <div
+            class="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 ease-in-out"
+            style="background-image: url('{{ $heroSlides->first()['image'] ?? '' }}')"
+            x-bind:style="slides[current] ? `background-image: url('${slides[current].image}')` : null"
+            role="img"
+            :aria-label="slides[current]?.alt || '{{ addslashes(__('home.hero_title')) }}'"
+        ></div>
         <div
             class="absolute inset-0 z-[2] bg-gradient-to-r from-black/45 via-black/20 to-transparent pointer-events-none transition-opacity duration-500"
             :class="slides[current]?.branded ? 'opacity-20' : 'opacity-100'"
@@ -150,11 +145,26 @@
         </header>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($destinations ?? [] as $destination)
-                <a href="{{ route('destinations.show', [$locale, $destination->getTranslation('slug', $locale)]) }}" class="card-luxury p-6 hover:border-primary-200 transition-colors">
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">{{ $destination->getTranslation('name', $locale) }}</h3>
-                    <p class="text-gray-500 text-sm line-clamp-3">{{ $destination->getTranslation('short_description', $locale) }}</p>
-                    @if($destination->country)
-                        <p class="text-primary-600 text-sm font-medium mt-3">{{ $destination->country }}</p>
+                <a href="{{ route('destinations.show', [$locale, $destination->getTranslation('slug', $locale)]) }}" class="card-luxury group overflow-hidden">
+                    <div class="relative h-56 overflow-hidden">
+                        <img
+                            src="{{ $destination->image ?: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800&q=80' }}"
+                            alt="{{ $destination->getTranslation('name', $locale) }}"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                            loading="lazy"
+                            width="800"
+                            height="450"
+                        >
+                        <div class="gradient-overlay"></div>
+                        <div class="absolute bottom-4 {{ $isRtl ? 'right-4' : 'left-4' }}">
+                            <h3 class="text-xl font-bold text-white">{{ $destination->getTranslation('name', $locale) }}</h3>
+                            @if($destination->country)
+                                <p class="text-white/80 text-sm">{{ $destination->country }}</p>
+                            @endif
+                        </div>
+                    </div>
+                    @if($destination->getTranslation('short_description', $locale))
+                        <p class="p-5 text-gray-500 text-sm line-clamp-2">{{ $destination->getTranslation('short_description', $locale) }}</p>
                     @endif
                 </a>
             @empty
@@ -176,13 +186,27 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             @forelse($packages ?? [] as $package)
-                <article class="card-luxury p-6">
-                    <span class="text-sm text-gray-500">{{ $package->duration_days }} {{ __('general.days') }}</span>
-                    <h3 class="text-xl font-bold text-gray-900 mt-2 mb-2">{{ $package->getTranslation('title', $locale) }}</h3>
-                    <p class="text-gray-500 text-sm line-clamp-2 mb-4">{{ $package->getTranslation('short_description', $locale) }}</p>
-                    <div class="flex items-center justify-between pt-4 border-t border-gray-100">
-                        <span class="text-2xl font-bold text-primary-600">${{ number_format($package->sale_price ?? $package->price) }}</span>
-                        <a href="{{ route('tours.show', [$locale, $package->getTranslation('slug', $locale)]) }}" class="btn-primary text-sm px-5 py-2.5">{{ __('general.book_now') }}</a>
+                <article class="card-luxury overflow-hidden group">
+                    <div class="relative h-52 overflow-hidden">
+                        <img
+                            src="{{ $package->image ?: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80' }}"
+                            alt="{{ $package->getTranslation('title', $locale) }}"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                            loading="lazy"
+                            width="800"
+                            height="450"
+                        >
+                        <div class="absolute top-4 {{ $isRtl ? 'right-4' : 'left-4' }} bg-white/90 backdrop-blur-sm px-3 py-1 rounded-lg text-sm font-semibold text-gray-700">
+                            {{ $package->duration_days }} {{ __('general.days') }}
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors">{{ $package->getTranslation('title', $locale) }}</h3>
+                        <p class="text-gray-500 text-sm line-clamp-2 mb-4">{{ $package->getTranslation('short_description', $locale) }}</p>
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <span class="text-2xl font-bold text-primary-600">${{ number_format($package->sale_price ?? $package->price) }}</span>
+                            <a href="{{ route('tours.show', [$locale, $package->getTranslation('slug', $locale)]) }}" class="btn-primary text-sm px-5 py-2.5">{{ __('general.book_now') }}</a>
+                        </div>
                     </div>
                 </article>
             @empty

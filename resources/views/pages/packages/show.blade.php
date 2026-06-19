@@ -16,7 +16,7 @@
             <!-- Main Content -->
             <div class="lg:col-span-2">
                 <div class="prose prose-lg max-w-none mb-12">
-                    {!! $package->getTranslation('description', $locale) !!}
+                    <x-safe-html :content="$package->getTranslation('description', $locale)" class="prose prose-lg max-w-none text-gray-600" />
                 </div>
 
                 <!-- Itinerary -->

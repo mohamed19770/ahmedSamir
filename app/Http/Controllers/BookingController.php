@@ -6,14 +6,15 @@ use App\Models\Booking;
 use App\Models\TourismPackage;
 use App\Models\Activity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 
 class BookingController extends Controller
 {
     public function create(string $locale, string $type, int $id)
     {
         $item = match ($type) {
-            'package' => TourismPackage::findOrFail($id),
-            'activity' => Activity::findOrFail($id),
+            'package' => TourismPackage::active()->findOrFail($id),
+            'activity' => Activity::active()->findOrFail($id),
             default => abort(404),
         };
 
@@ -37,8 +38,8 @@ class BookingController extends Controller
         ]);
 
         $item = match ($validated['type']) {
-            'package' => TourismPackage::findOrFail($validated['item_id']),
-            'activity' => Activity::findOrFail($validated['item_id']),
+            'package' => TourismPackage::active()->findOrFail($validated['item_id']),
+            'activity' => Activity::active()->findOrFail($validated['item_id']),
         };
 
         $price = $item->sale_price ?? $item->price;
@@ -58,8 +59,13 @@ class BookingController extends Controller
             'total_price' => $totalPrice,
         ]);
 
-        return redirect()->route('booking.confirmation', [$locale, $booking->booking_number])
-            ->with('success', 'Booking confirmed successfully!');
+        return redirect()->to(
+            URL::temporarySignedRoute(
+                'booking.confirmation',
+                now()->addDays(30),
+                ['locale' => $locale, 'bookingNumber' => $booking->booking_number]
+            )
+        )->with('success', 'Booking confirmed successfully!');
     }
 
     public function confirmation(string $locale, string $bookingNumber)

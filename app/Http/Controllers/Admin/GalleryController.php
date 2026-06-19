@@ -25,6 +25,27 @@ class GalleryController extends Controller
     }
 
     public function edit(Gallery $gallery) { return view('admin.gallery.create', compact('gallery')); }
-    public function update(Request $request, Gallery $gallery) { $gallery->update($request->only('title', 'description', 'category', 'is_active', 'is_featured')); return redirect()->route('admin.gallery.index')->with('success', 'Updated.'); }
+    public function update(Request $request, Gallery $gallery)
+    {
+        $validated = $request->validate([
+            'title' => 'nullable|array',
+            'description' => 'nullable|array',
+            'category' => 'nullable|string|max:100',
+            'image' => 'nullable|image|max:10240',
+            'is_active' => 'sometimes|boolean',
+            'is_featured' => 'sometimes|boolean',
+        ]);
+
+        $validated['is_active'] = $request->boolean('is_active', $gallery->is_active);
+        $validated['is_featured'] = $request->boolean('is_featured', $gallery->is_featured);
+
+        if ($request->hasFile('image')) {
+            $validated['image'] = $request->file('image')->store('gallery', 'public');
+        }
+
+        $gallery->update($validated);
+
+        return redirect()->route('admin.gallery.index')->with('success', 'Updated.');
+    }
     public function destroy(Gallery $gallery) { $gallery->delete(); return redirect()->route('admin.gallery.index')->with('success', 'Deleted.'); }
 }

@@ -32,13 +32,16 @@
                         ['route' => 'admin.testimonials.index', 'icon' => 'M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z', 'label' => 'Testimonials'],
                         ['route' => 'admin.sliders.index', 'icon' => 'M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2M7 4h10M7 4H4a1 1 0 00-1 1v14a1 1 0 001 1h16a1 1 0 001-1V5a1 1 0 00-1-1h-3', 'label' => 'Sliders'],
                         ['route' => 'admin.inquiries.index', 'icon' => 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z', 'label' => 'Inquiries'],
-                        ['route' => 'admin.users.index', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', 'label' => 'Users'],
+                        ['route' => 'admin.users.index', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', 'label' => 'Users', 'admin_only' => true],
                         ['route' => 'admin.seo.index', 'icon' => 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z', 'label' => 'SEO Settings'],
                         ['route' => 'admin.settings.index', 'icon' => 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z', 'label' => 'Settings'],
                     ];
                 @endphp
 
                 @foreach($adminNav as $nav)
+                    @if(!empty($nav['admin_only']) && auth()->user()->role !== 'admin')
+                        @continue
+                    @endif
                     <a href="{{ route($nav['route']) }}"
                        class="flex items-center gap-3 px-4 py-3 rounded-xl transition-colors {{ request()->routeIs($nav['route'] . '*') ? 'bg-primary-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }}">
                         <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -69,7 +72,11 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <a href="{{ route('home', 'en') }}" target="_blank" class="text-sm text-gray-500 hover:text-primary-600 transition-colors">View Site</a>
+                    <a href="{{ route('home', 'en') }}" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-500 hover:text-primary-600 transition-colors">View Site</a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="text-sm text-gray-500 hover:text-red-600 transition-colors">Logout</button>
+                    </form>
                     <div class="w-9 h-9 bg-primary-100 rounded-full flex items-center justify-center">
                         <span class="text-primary-700 font-semibold text-sm">{{ substr(auth()->user()->name ?? 'A', 0, 1) }}</span>
                     </div>

@@ -193,16 +193,8 @@
     }
 
     .hero-slide-img {
-        @apply absolute inset-0 w-full h-full object-cover transition-opacity duration-[1.2s] ease-in-out;
+        @apply absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out opacity-0 z-0;
         content-visibility: visible !important;
-    }
-
-    .hero-slide-active {
-        @apply opacity-100 z-[1];
-    }
-
-    .hero-slide-inactive {
-        @apply opacity-0 z-0;
     }
 }
 
@@ -235,10 +227,6 @@
     50% {
         transform: translateY(-20px);
     }
-}
-
-.swiper-pagination-bullet-active {
-    @apply !bg-primary-500;
 }
 
 [x-cloak] {

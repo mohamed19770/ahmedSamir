@@ -31,7 +31,7 @@
         <div class="grid lg:grid-cols-3 gap-12">
             <div class="lg:col-span-2">
                 <div class="prose prose-lg max-w-none">
-                    {!! $activity->getTranslation('description', $locale) !!}
+                    <x-safe-html :content="$activity->getTranslation('description', $locale)" class="prose prose-lg max-w-none text-gray-600" />
                 </div>
             </div>
 

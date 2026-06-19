@@ -16,14 +16,20 @@ class SearchController extends Controller
         $activities = collect();
 
         if ($query) {
+            $like = '%'.$query.'%';
+
             $packages = TourismPackage::active()
-                ->whereRaw('(title->>?) LIKE ?', [$locale, "%{$query}%"])
-                ->orWhereRaw('(description->>?) LIKE ?', [$locale, "%{$query}%"])
+                ->where(function ($builder) use ($locale, $like) {
+                    $builder->whereRaw('(title->>?) LIKE ?', [$locale, $like])
+                        ->orWhereRaw('(description->>?) LIKE ?', [$locale, $like]);
+                })
                 ->take(12)->get();
 
             $activities = Activity::active()
-                ->whereRaw('(title->>?) LIKE ?', [$locale, "%{$query}%"])
-                ->orWhereRaw('(description->>?) LIKE ?', [$locale, "%{$query}%"])
+                ->where(function ($builder) use ($locale, $like) {
+                    $builder->whereRaw('(title->>?) LIKE ?', [$locale, $like])
+                        ->orWhereRaw('(description->>?) LIKE ?', [$locale, $like]);
+                })
                 ->take(12)->get();
         }
 

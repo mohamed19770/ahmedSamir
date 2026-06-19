@@ -11,17 +11,35 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->seedAdminUser();
+        $this->seedSeoSettings();
+    }
+
+    private function seedAdminUser(): void
+    {
+        if (app()->environment('production') && ! env('ADMIN_SEED_PASSWORD')) {
+            $this->command?->warn('Skipped admin user seed in production. Set ADMIN_SEED_PASSWORD to create one.');
+
+            return;
+        }
+
+        $password = env('ADMIN_SEED_PASSWORD', 'password');
+
+        if (app()->environment('production') && strlen($password) < 12) {
+            $this->command?->error('ADMIN_SEED_PASSWORD must be at least 12 characters in production.');
+
+            return;
+        }
+
         User::firstOrCreate(
-            ['email' => 'admin@designation2go.com'],
+            ['email' => env('ADMIN_SEED_EMAIL', 'admin@designation2go.com')],
             [
                 'name' => 'Admin',
-                'password' => Hash::make('password'),
+                'password' => Hash::make($password),
                 'role' => 'admin',
                 'is_active' => true,
             ]
         );
-
-        $this->seedSeoSettings();
     }
 
     private function seedSeoSettings(): void

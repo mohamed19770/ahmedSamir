@@ -24,7 +24,7 @@
 <section class="section-padding">
     <div class="container-custom max-w-4xl">
         <article class="prose prose-lg max-w-none prose-headings:font-bold prose-a:text-primary-600 prose-img:rounded-xl">
-            {!! $post->getTranslation('content', $locale) !!}
+            <x-safe-html :content="$post->getTranslation('content', $locale)" class="prose prose-lg max-w-none text-gray-600" />
         </article>
 
         @if($post->tags)

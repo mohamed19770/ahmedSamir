@@ -34,8 +34,15 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\SiteLockController;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\SuperAdminMiddleware;
+
+Route::get('/site-lock', [SiteLockController::class, 'show'])->name('site-lock.show');
+Route::post('/site-lock', [SiteLockController::class, 'unlock'])
+    ->middleware('throttle:5,1')
+    ->name('site-lock.unlock');
 
 Route::get('/', function () {
     $locale = request()->cookie('locale') ?: LocaleHelper::detectFromRequest(request());
@@ -83,24 +90,28 @@ Route::prefix('{locale}')
         Route::get('/testimonials', [TestimonialController::class, 'index'])->name('testimonials.index');
 
         Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
-        Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
+        Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:5,1')->name('contact.store');
 
         Route::get('/faq', [FaqController::class, 'index'])->name('faq.index');
         Route::get('/careers', [CareerController::class, 'index'])->name('careers.index');
 
         Route::get('/booking/{type}/{id}', [BookingController::class, 'create'])->name('booking.create');
-        Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
-        Route::get('/booking/confirmation/{bookingNumber}', [BookingController::class, 'confirmation'])->name('booking.confirmation');
+        Route::post('/booking', [BookingController::class, 'store'])->middleware('throttle:5,1')->name('booking.store');
+        Route::get('/booking/confirmation/{bookingNumber}', [BookingController::class, 'confirmation'])
+            ->middleware('signed')
+            ->name('booking.confirmation');
 
         Route::get('/search', [SearchController::class, 'index'])->name('search');
     });
 
-Route::post('/newsletter/subscribe', [NewsletterController::class, 'store'])->name('newsletter.store');
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'store'])
+    ->middleware('throttle:10,1')
+    ->name('newsletter.store');
 
 // Authentication Routes
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:5,1');
+Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
 
 Route::prefix('admin')
     ->middleware(['auth', AdminMiddleware::class])
@@ -114,7 +125,10 @@ Route::prefix('admin')
         Route::resource('gallery', AdminGalleryController::class);
         Route::resource('testimonials', AdminTestimonialController::class);
         Route::resource('sliders', SliderController::class);
-        Route::resource('users', UserController::class);
+
+        Route::middleware(SuperAdminMiddleware::class)->group(function () {
+            Route::resource('users', UserController::class);
+        });
 
         Route::get('bookings', [AdminBookingController::class, 'index'])->name('bookings.index');
         Route::get('bookings/{booking}', [AdminBookingController::class, 'show'])->name('bookings.show');
